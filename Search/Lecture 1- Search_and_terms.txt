@@ -1,0 +1,139 @@
+Agent- entity that perceives its environment and acts upon that environment
+
+State- a configuration of the agent and its environment.
+
+Initial State- the state where the agent begins.
+
+Actions- choices that can be made in a state.
+
+Actions(s) returns the set of actions that can be executed in state s.
+
+Transition model- a description of what state results from performing any applicable action in any state
+
+Result(s,a) returns the state resulting from performing action a in state s
+
+State space- the set of all states reachable form the intial state by any sequence of actions
+
+Goal test- way to determine whether a given state is a goal state
+
+Path cost- numerical cost associated with a given path
+
+Search Problems:
+
+-Initial state
+
+-Actions
+
+-Transition model
+
+-goal test
+
+-path cost function
+
+Solution- a sequence of actions that leads from initial state to goal state
+
+Optimal Solution- lowest path cost among all solutions
+
+Node-
+
+a data structure that keeps track of a state, a parent (node that generated this node), an action (action applied to parent to get node), a path cost(from intial state to node).
+
+Approach- Start with a frontier that contains the intial state, 
+Repeat: 
+	-if the frontier is empty, then no solution
+	-Remove a node from the frontier
+	-if node contains goal state, return the solution
+	-Expand node, add resulting nodes to the frontier
+	
+Revised Approach- Start w a frontier that contains an initial state
+		  Start with an empty explored set
+Repeat:
+	-If frontier is empty, no solution
+	-Remove node
+	-Add node to explored set
+	-Expand node, add resulting nodes to the frontier if they arent 	already in the frontier or explored set
+
+Stack- last-in first-out data type
+
+Depth-First Search - search algorithm that alwyas expands the deepest node in the frontier (example using stack)
+
+Breadth-first search- always expands the shallowest node in the frontier (so this means first-in first-out data type (queue))
+
+Uninformed Search- search strategy that uses no problem-specific knowledge to solve the problem
+
+Informed Search- search strategy that uses problem-specific knowldge to find solutions more efficiently
+
+greedy best-first search- search algorithm that expands the node that is closest to the goal, as estimated by a heuristic function h(n)
+
+A* search-
+
+search algorithm that expands node with lowest value of g(n) + h(n)
+
+g(n) = cost to reach node
+h(n) = estimated cost to goal
+
+optimal if - h(n) is admissible (never overestimates the true cost), and 
+h(n) is consistent (for every node n and successor n' with step cst c, h(n) <= h(n') + c)
+
+Adversarial Search- opposition introduced
+
+Minimax:
+
+MAX(X) - aims to maximize score (1)
+MIN(O) -  aims to minimize score (-1)
+
+Game:
+
+S_o- initial state
+Player(s) - returns which player to move in state s
+Action(s) -  returns legal moves in state s
+Result(s,a) - returns state after action a taken in state s
+Terminal(s) - checks if state s is a terminal state
+Utility(s)- final numerical value for terminal state s
+
+~Given a state s:
+	-Max pics aciton a in Actions(s) that produces high value of min-	value(Result(s,a))
+	-Min picks action a in Action(s) that prodcues lowest value of 	max-value(Result(s,a))
+
+Function max-value(state): 
+	if Terminal(state):
+		return Utility(state)
+	v = -infinity
+	for actions in Actions(state):
+		v = MAX(v,Min-Value(result(state,action)))
+	return v
+
+Function min-value(state):
+	if Terminal(state):
+		return Utility(State)
+	v = infinity
+	for actions in Actions(state):
+		v = MIN(v,Max-Value(results(state,action)))
+	return v
+
+Alpha-Beta Pruning- efficiently searching through nodes in order to optimize our bset route
+
+Depth-limited Minimax- after a certain number of moves we stop, and not consider additional moves
+
+Evaluation Funciton- function that estimates expected utility of a game from a given state
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
