@@ -122,8 +122,6 @@ def shortest_path(source, target):
         expandedNode = frontier.remove()
 
         # find all the movies that an actor has, in the expanded node
-        #actions = list(people[expandedNode.state]['movies'])
-
         if expandedNode.state == target:
             actions = []; cells = []
             while expandedNode.parent is not None:
@@ -159,41 +157,8 @@ def shortest_path(source, target):
 
                 else:
                     frontier.add(child)
-
-
-
-
-
-        # for action in actions:
-        #     # map the list of movie stars in each movie
-        #     #nodes = [Node(state=i,parent=expandedNode,action=action) for i in list(movies[action]['stars'])]
-        #     for node in nodes:
-        #         if node in explored:
-        #             continue
-        #         if node.state == target:
-        #             while node.parent is not None:  
-        #                 path.append((action, node.state))
-        #                 node = node.parent
-        #                 action = node.action
-        #             path.reverse()  
-        #             print(path)
-        #             return path
-        #         if node == target:
-        #             while nodes2[node].parent is not None:  
-        #                 path.append((action, nodes2[node].state))
-        #                 node = nodes2[node].parent if node.parent is None else node.parent
-        #                 action = node.action
-        #             #path.reverse() 
-        #             print(path)
-        #             return path
-        #         else:
-        #             explored.append(node)
-        #             frontier.add(node)
         
         
-
-
-
 def person_id_for_name(name):
     """
     Returns the IMDB id for a person's name,
