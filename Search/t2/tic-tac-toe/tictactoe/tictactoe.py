@@ -231,7 +231,6 @@ def minimax(board):
                 bestNode = bestValues[0]
                 for i in bestValues:
                     turn = player(start.state)
-                    print("test1")
                     if turn == X:
                         if i.value > bestNode.value:
                             bestNode = i

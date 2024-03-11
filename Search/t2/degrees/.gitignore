@@ -1,0 +1,6 @@
+# Specific files to ignore for push
+small/ 
+large/ 
+
+# Ignore pycache
+__pycache__/
