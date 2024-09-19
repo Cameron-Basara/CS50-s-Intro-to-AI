@@ -139,11 +139,10 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone in set `have_trait` has the trait, and
         * everyone not in set` have_trait` does not have the trait.
     """
-    # Calculate joint probability based on who has which gene and trait
-    joint_p = 1 # start with total p of 1
+    joint_p = 1  # Start with total probability of 1
 
     for person, info in people.items():
-        # Determine gene for person
+        # Determine gene count for the person
         if person in two_genes:
             gene_count = 2
         elif person in one_gene:
@@ -151,37 +150,36 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         else:
             gene_count = 0
 
-        # Determine if person has trait
-        trait = person in have_trait # Bool if person has trait
+        # Determine if person has the trait
+        has_trait = person in have_trait
 
-        # Hereditary p
+        # Calculate gene probability
         if info["mother"] is None and info["father"] is None:
-            # Use provided gene prob
+            # No parental information, use unconditional probability
             gene_p = PROBS["gene"][gene_count]
         else:
+            # Calculate probability based on parents' genes
             mom = info["mother"]
             dad = info["father"]
 
-            # Parental p of pasing the gene 
-            mom_p  = calculate_parent_prob(mom, one_gene, two_genes) 
+            # Probability that mother and father pass on the gene
+            mom_p = calculate_parent_prob(mom, one_gene, two_genes)
             dad_p = calculate_parent_prob(dad, one_gene, two_genes)
 
-            # P that person ends up with gene count
+            # Calculate the probability that the child has `gene_count` genes
             if gene_count == 2:
-                # Both parents pass gene
-                gene_p = mom_p * dad_p
+                gene_p = mom_p * dad_p  # Both parents pass on the gene
             elif gene_count == 1:
-                # 1 parent pases the gene
-                gene_p = (mom_p *(1-dad_p) + dad_p *(1-mom_p))
+                gene_p = (mom_p * (1 - dad_p)) + (dad_p * (1 - mom_p))  # One parent passes the gene
             else:
-                # Edge
-                gene_p = (1-mom_p) *(1-dad_p)
-            
-            # Get trait p
-            trait_p = PROBS["trait"][gene_count][trait]
+                gene_p = (1 - mom_p) * (1 - dad_p)  # Neither parent passes the gene
 
-            # Multiply the p together to achieve joint p
-            joint_p *= trait_p *gene_p
+        # Calculate trait probability for the person
+        trait_p = PROBS["trait"][gene_count][has_trait]
+
+        # Multiply the gene and trait probabilities to the joint probability
+        joint_p *= gene_p * trait_p
+
     return joint_p
 
 def update(probabilities, one_gene, two_genes, have_trait, p):
