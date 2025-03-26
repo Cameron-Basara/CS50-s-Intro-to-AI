@@ -1,0 +1,27 @@
+Crossword Notes
+
+Modelling the generation of a crossword as a constraint satisfaction problem. 
+
+Vars -> each sequence of squares 
+Domain -> possible words which will fill the sequence
+
+Recommend defining the variables by length of the word, begining square and direction of word either down or accross.
+
+Unary constraint -> length
+Binary constraint -> overlap with neighboring vars. May be represented by pair (i,j) meaning var n char at index i must be the same as var m at i and so on.
+
+Another constraint -> var n != var m for all n,m belonging to vars
+
+
+Note in particular, that for any crossword object crossword, we store the following values:
+
+    crossword.height is an integer representing the height of the crossword puzzle.
+    crossword.width is an integer representing the width of the crossword puzzle.
+    crossword.structure is a 2D list representing the structure of the puzzle. For any valid row i and column j, crossword.structure[i][j] will be True if the cell is blank (a character must be filled there) and will be False otherwise (no character is to be filled in that cell).
+    crossword.words is a set of all of the words to draw from when constructing the crossword puzzle.
+    crossword.variables is a set of all of the variables in the puzzle (each is a Variable object).
+    crossword.overlaps is a dictionary mapping a pair of variables to their overlap. For any two distinct variables v1 and v2, crossword.overlaps[v1, v2] will be None if the two variables have no overlap, and will be a pair of integers (i, j) if the variables do overlap. The pair (i, j) should be interpreted to mean that the ith character of v1’s value must be the same as the jth character of v2’s value.
+
+
+neighbors method that returns all vars that overlap a var crossword.neighbors(v1)
+

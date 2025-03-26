@@ -1,0 +1,194 @@
+Lecture 3 Notes
+
+Optimization 
+
+Local search -> search algorithm that maintains a single node and searches by moving to a neighbouring node. Goal is to find the best answer to a question. Often not optimal but good enough to conserve 
+computational power.
+
+Objective f -> fn used to max the value of the solution
+cost fn -> fn used to min the cost of soln.
+current state -> being considered by fn
+neighbor state -> state current state can be transitioned to
+
+
+Hill climbing -> type of local search. neighbor states are compared to current state, if any are better, change current node from current state to neighbor state.
+
+function Hill-Climb (problem):
+    current = inital state of problem
+    repeat:
+        neighbor = best valued neighbor of current
+        if neighbor not better than current:
+            return current
+        current = neighbor
+
+
+Local and global min and max
+
+local -> a state that has a higher val thn its neighboring states.
+global -> highest val of all states in state-space
+
+
+Hill climbing vars
+
+Steepest-ascent -> choose highest-valued neighbor
+Stochastic -> choose randomly from higher-val neighbors
+First-choice -> choose first higherval
+Random-restart -> conduct hill climbing multiple times, each time starting from a radnom state. Compare maxima from each trial, choose highest amongst those.
+Local beam search -> choose k highest-val neighbors
+
+
+Simulated Annealing
+
+The other variants stop once reaching a local max, SA allows the algorithm to dislodge iself if it gets stuck in a local max.
+
+Annealing -> heating a metal and allowing it to cool slowly. Start at a high temperature representing more random decisions, as temperature decreases randomness goes done.
+
+function Simulated-Annealing(problem, max):
+    current = inital state
+    for t=1 to max:
+        T = Temperature(t)
+        neighbor = random neighbor of current
+        deltaE = how much better neighbor is that current
+        if deltaE > 0:
+            current = neighbor
+        with probability e^(deltaE/T) set current = neighbor
+    return current
+
+
+Traveling Salesman problem
+
+The task is to connect all pooints while choosing the shortest possible distance.
+
+
+Linear Programming
+
+"" family of problems that optimize a linear equation
+
+LP have components:
+    - Cost function that we want to min: c1x1 + ... + cnxn. each xi is a var and its associated cost ci
+    - A constaint thats represnetd as a sum of vars that is either less than or equal to a val (a1x1+...+anxn <= b) or precisely equal. ai here is some resource associated with it, and b is how much 
+    ressources we can dedicate to this problem
+    - Individual bounds on vars, li <= xi <= ui
+
+ex)
+'''
+import scipy.optimize
+
+# Objective Function: 50x_1 + 80x_2
+# Constraint 1: 5x_1 + 2x_2 <= 20
+# Constraint 2: -10x_1 + -12x_2 <= -90
+
+result = scipy.optimize.linprog(
+    [50, 80],  # Cost function: 50x_1 + 80x_2
+    A_ub=[[5, 2], [-10, -12]],  # Coefficients for inequalities
+    b_ub=[20, -90],  # Constraints for inequalities: 20 and -90
+)
+
+if result.success:
+    print(f"X1: {round(result.x[0], 2)} hours")
+    print(f"X2: {round(result.x[1], 2)} hours")
+else:
+    print("No solution")
+'''
+
+
+Constraint Satisfaction -> class of problems where variables need to be assigned values while satisfying some conditions.
+
+CS have:
+    - Set of vars
+    - Set of domains for each var
+    - Set of constraints C
+
+
+Hard constraint -> must be satisfied in a correct soln
+Soft constraint -> expresses which soln is preffered over others
+Unary constraint -> involes only 1 variable
+Binary constraint -? invloves 2 vars
+
+
+
+Node consistency -> when all the vals in a vars domain satisfy the vars unary constrains
+
+Arc ("edge") consistency -> """" binary constraints. to make X arc-consistent with respect to Y, remove elements form X's domain until every choice for X has  a possible choice for Y.
+
+algorithm that makes a var arc-consistent wrsp to some other var (csp stands for constraint satisfaction problem)
+
+function Revise(csp, X, Y):
+    revised = False
+    for x in X.domain:
+        if no y in Y.domain satisfies contraint for (X,Y):
+            delete x form X.domain
+            revised = true
+    return revised
+
+If we are insterested in makig the whole pb arc-consistent, (not just X to Y) we use AC-3
+
+fucntion AC-3 (csp):
+    queue = all arcs in csp
+    while queue non-empty:
+        (X, Y) = Dequeue(queue)
+        if Revise(csp, X, Y):
+            if size of X.domain == 0:
+                return False
+            for each Z in X.neighbors - {Y}:
+                Enqueue(queue,(Z,X))
+    return True
+
+AC-3 does not necessarily solve a problem, since it only considers binary constraints, not how multiple nodes are interconnected.
+
+Csp => search pb:
+    - Initial state: empty assignment (all vars dont have any val assignemd)'
+    - Actions: add a {var=val} to assignment;
+    - Transition model: shows how adding the assignement changes the assignemnt.
+    - Goal test: check if all vars are assigned a value and all constraints are satisfied
+    - Path cost function: all paths have the same cost
+
+
+
+Backtracking search
+
+a type of search algorithm that takes into account the structure of a csp serach pb. (recurssive) attempts to continue assigning vals as longa s they satisfy the constraints.
+
+function Backtrack(assignment, csp):
+    if assignment complete:
+        return assignment
+    var = Select-Unassigned-Var(assignement, csp)
+    for value in Domain-Values(var, assignment, csp):
+        if value consistent with assignment:
+            add{var=value} to assignment
+            result = Backtrack(assignment, csp)
+            if result != failure:
+                return result
+            remove {var=value} from assignment
+    return failure
+
+
+Inference
+
+Inetleaving backtracking search with inference (enforcing arc consistency) leaves a more efficient algorithm. After we make a new assignemnet to X, we call AC-3 and start it with a queue of all arcs
+(Y,X) where Y is the neighboy of X.
+
+function Backtrack(assignment, csp):
+    if assignment complete:
+        return assignment
+    var = Select-Unassigned-Var(assignement, csp)
+    for value in Domain-Values(var, assignment, csp):
+        if value consistent with assignment:
+            add{var=value} to assignment
+            inferences = Inference(assignment, csp)
+            if inferences != failure:
+                add inferences to assignment
+            result = Backtrack(assignment, csp)
+            if result != failure:
+                return result
+            remove {var=value} and inferences from assignment
+    return failure
+
+inference fn runs the AC-3 algorithm, outputting all the inferences that can be made through enforcing arc consistency.
+
+Adding a heuristic to choosing select-unassigned-var: Minimum remainig values (MRV) -> if a domain was restricted by inference, by making this reduced assignment, we reduce the amount of backtracking
+we have to do later on.
+
+Degree -> relies on degrees of variables, meaning how many arcs connect a variable to other vars. I.e constrain the highes degree of variables, which will constrain more variablsee speeding up computational time
+
+Least Constraining Values -> choose node that constrains the leaast amount of vars.

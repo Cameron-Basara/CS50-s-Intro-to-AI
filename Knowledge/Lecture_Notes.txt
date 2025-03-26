@@ -12,3 +12,124 @@ inference -  the process of deriving new sentances from old ones
 
 Model checking - to determine if KB entails alpha -> enumerate all possible models -> if in every model where KB is true alpha mhst also be true
 
+On using logic for code (Any notes on code):
+
+def symbols -> A = Symbol("A")
+
+knowledge = And(
+    Implication(Not(A), B),
+    Or(A,B)  
+) # Something like this, using multiple logical statements to mean something
+
+model_check(knowledge, A) # based on this knowldge, do I know for sure if A 
+print(sentence.formula())
+
+# This is an application of the given logic library example
+
+Lecture break to go over the logic.py library: Done 
+
+model_check -> checks if knowledge base entails query, given a particular model
+
+Why is this useful? Change a problem into propositional logic to see if its true or false !
+
+This is called "Knowledge Engineering" -> taking a general purpose problem into a problem computers know how to solve
+
+Some examples:
+
+Clue : Propositional symbols -> corresponding to each of the possible options under each chatagory (people, rooms, weapons)
+                             -> Using these symnols create knowledge base
+                    (m v p v s): characters knowledge base
+                    (b v k v l): ..
+                    (k v ..): ..
+                             -> Acquiring "Deducing" information like Not(p) . . .
+                             -> Use this to develop knowledge base
+
+Taking a look at clue.py ...
+
+Harry Potter Puzzle: same idea, quite tedius
+
+Mastermind: Cool example, same premise but interesting application
+
+
+Inference Rules: Natural Deduction Rules
+
+Bringing it back to search problems,
+
+Theorem Proving:
+
+~Initial state: starting knowledge base
+~actions: inference Rules
+~transition model: new knowledge base after infeerece
+~Goal test: check statement were trying to prove
+~path cost function: number of steps in proof
+
+Clause - a disjunction of lierals eg. P v Q v Rules
+
+Conjuctive normal form - logical sentence that is a conjunction of clauses e.g (A v B v C) and (D v ~E) and (F v G)
+
+How to take logical formula to cnf
+
+- Eliminate biconditionals 
+- Eliminate implications
+- move ~ inwards using de morgans law
+- use dist law to distribute v whever prossible
+
+eg. (P v Q) => R becomes ~(P v Q) v R becomes (~P and ~Q) v R becomes (~P v R) and (~Q v R)
+Yay!
+
+... but why? Once in CNF, clauses are the resolution to the inference Rules
+
+this is called inference resolution
+
+Inference by resolution
+- To determine if KB entails a:
+    Check if (KB and ~a) is a cotradiction
+        if so then kb entails A
+        otw not
+- To determine if KB entails a:
+    convert kb and ~a to CNFkeep checking to see if we can use resolution to produce a new clause 
+        if we produce the empty clause, we have a contradiction, then KB entails A
+        otw, no entailment
+
+
+First Order Logic: breaking down into constant symbols and predicate symbols 
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
